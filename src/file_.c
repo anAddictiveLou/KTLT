@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "convert_.h"
 
 int existsDetect(char *fname) 
@@ -28,30 +29,45 @@ int fileDetect(FILE *pFile)
     return 1;       //morse file
 }
 
-int convertToCharacterOverwrite(FILE *input, FILE *output)  //output is character file 
-{
-    char *line = NULL;
-    size_t len = 0;
-    ssize_t nread;
-    int i = 0;
+int convertToCharacter(FILE *input, FILE *output)  //output is character file.
+{   
+    char buff[300];
+    char ch;
+    size_t i = 0;
     
-    //getline() tu dong cap phan bo nho de luu tru chuoi.
-    while ((nread = getline(&line, &len, input)) != -1) {
-        //Tach dong theo word by word.
-        splitWord(line);
-        fwrite(line, nread, 1, output);
+    while ((ch = fgetc(input)) != EOF) 
+    {
+        switch (ch)
+        {
+        case '\n':
+            buff[i] = ' ';
+            buff[i+1] = '\n';
+            buff[i+2] = ' ';
+            i+=3;
+            break;
+        
+        default:
+            buff[i] = ch;
+            i++;
+            break;
+        }
     }
-
-    //Giai phong vung nho cap phat boi ham getline().
-    free(line); 
-    fclose(input);
-    fclose(output);
+    splitCharacter(buff, output);    
     return 0;
 }
 
-int convertToMorseOverwrite(FILE *input, FILE *ouput)
+int convertToMorse(FILE *input, FILE *ouput)   //output is morse file.
 {
-
-    return 1;
+    int size = 0;
+    char chr;
+    do
+    {           
+        chr = fgetc(input);
+        chr = tolower(chr);
+        size++;
+        fputs(morseEncode(chr), ouput);
+        
+    } while (chr != EOF);
+    return 0;
 }
 

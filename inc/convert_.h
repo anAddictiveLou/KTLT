@@ -1,6 +1,8 @@
 
-void splitCharacter(char* str);
-void splitWord(char* str);
+
+void splitCharacter(char* str, FILE* output);
+void morseDecode(char *str, FILE* output);
+void *morseEncode(char l);
 
 
 

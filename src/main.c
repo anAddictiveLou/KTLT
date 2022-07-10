@@ -17,15 +17,11 @@ int main(int argc, char *argv[])
 
    int test = existsDetect(argv[2]); 
    char ch;
+
+   /*Mo file input va kiem tra loi*/
    FILE *input = NULL;
    input = fopen(argv[1],"r");
-   //Kiem tra loi khi mo file input.
    if (input == NULL){ERR(1)};
-
-   FILE *output = NULL;
-   output = fopen(argv[2], "w+");
-   //Kiem tra loi khi mo file output. 
-   if (output == NULL){ERR(2)};
 
    int check = fileDetect(input);  
 
@@ -36,27 +32,55 @@ int main(int argc, char *argv[])
       case 1:  //input file la file Morse.
          printf("Warning: FILENAME already exists. Do you wish to overwrite (y,n)? ");
          scanf("%c", &ch);
-         if (ch == 'y'){convertToCharacterOverwrite(input, output);}
+         if (ch == 'y') {
+         /*Mo file output va kiem tra loi*/
+         FILE *output = NULL;
+         output = fopen(argv[2], "w+");
+         if (output == NULL){ERR(2)};
+
+         convertToCharacter(input, output);
+         fclose(output);
+         }
+         fclose(input);
          break;   
+
       case 0:  //input file la file Character.
          printf("Warning: FILENAME already exists. Do you wish to overwrite (y,n)? ");
          scanf("%c", &ch);
-         //if (ch == 'y') {morseConvertOverwrite(input, argv[2]);}
+         if (ch == 'y') {
+         /*Mo file output va kiem tra loi*/
+         FILE *output = NULL;
+         output = fopen(argv[2], "w+");
+         if (output == NULL){ERR(2)};
+
+         convertToMorse(input, output);
+         fclose(output);
+         }
+         fclose(input);
          break;
       }
 
    } else if (test == 0) { //test = 0: file output chua ton tai, tao file output.
 
+      FILE *output = NULL;
       switch (check) //Kiem tra file input la loai file nao.
       {
       case 1:   //input file la file Morse.
-         printf("file Morse\n"); 
+         output = fopen(argv[2], "w");
+         if (output == NULL){ERR(2)};
+         convertToCharacter(input, output);
+         fclose(input);
+         fclose(output);
          break;   
+
       case 0:   //input file la file Morse.
-         printf("file character\n");
+         output = fopen(argv[2], "w");
+         if (output == NULL){ERR(2)};
+         convertToMorse(input, output);
+         fclose(input);
+         fclose(output);
          break;
       }
    } 
-  
    return 0;
 }
